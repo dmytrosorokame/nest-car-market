@@ -13,6 +13,7 @@ import {
 import { UsersService } from './users.service';
 import { Serialize } from '../interceptors/serialize.interceptor';
 
+@Serialize(UserDto)
 @Controller('auth')
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -22,7 +23,6 @@ export class UsersController {
     return this.usersService.create(dto);
   }
 
-  @Serialize(UserDto)
   @Get(':id')
   findUser(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOne(id);
