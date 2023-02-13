@@ -1,4 +1,4 @@
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, UpdateUserDto, UserDto } from './dto';
 import {
   Body,
   Controller,
@@ -11,7 +11,9 @@ import {
   Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { Serialize } from '../interceptors/serialize.interceptor';
 
+@Serialize(UserDto)
 @Controller('auth')
 export class UsersController {
   constructor(private usersService: UsersService) {}
