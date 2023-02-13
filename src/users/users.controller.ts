@@ -1,4 +1,4 @@
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, UpdateUserDto, UserDto } from './dto';
 import {
   Body,
   Controller,
@@ -9,10 +9,9 @@ import {
   Patch,
   Post,
   Query,
-  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { SerializeInterceptor } from '../interceptors/serialize.interceptor';
+import { Serialize } from '../interceptors/serialize.interceptor';
 
 @Controller('auth')
 export class UsersController {
@@ -23,7 +22,7 @@ export class UsersController {
     return this.usersService.create(dto);
   }
 
-  @UseInterceptors(SerializeInterceptor)
+  @Serialize(UserDto)
   @Get(':id')
   findUser(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOne(id);
