@@ -16,6 +16,7 @@ export class User {
   email: string;
 
   @Column()
+  // @Exclude() we can use this, but maybe we want to exclude only in some scenario.
   password: string;
 
   @AfterInsert()
