@@ -25,11 +25,6 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
-  // @Get('me')
-  // getMe(@Session() session: any) {
-  //   return this.usersService.findOne(session.userId);
-  // }
-
   @Get('me')
   getMe(@CurrentUser() user: User) {
     return user;
