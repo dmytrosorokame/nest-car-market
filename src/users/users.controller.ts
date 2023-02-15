@@ -11,11 +11,13 @@ import {
   Post,
   Query,
   Session,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { AuthService } from './auth.service';
 import { User } from './user.entity';
+import { AuthGuard } from '../guards/auth.guard';
 
 @Controller('auth')
 @Serialize(UserDto)
@@ -26,6 +28,7 @@ export class UsersController {
   ) {}
 
   @Get('me')
+  @UseGuards(AuthGuard)
   getMe(@CurrentUser() user: User) {
     return user;
   }
