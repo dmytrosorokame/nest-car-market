@@ -1,10 +1,10 @@
+import { UpdateUserDto } from './dto/update-user.dto';
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { AuthService } from './auth.service';
 import { User } from './user.entity';
-import e from 'express';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -23,10 +23,21 @@ describe('UsersController', () => {
       find: (email: string) => {
         return Promise.resolve([{ id: 1, email, password: 'asdf' } as User]);
       },
-      // remove: (id: number) => {
-      //   return Promise.resolve()
-      // },
-      // update: () => {},
+      remove: (id: number) => {
+        return Promise.resolve({
+          id,
+          email: 'asdf@asdf.com',
+          password: 'asdf',
+        } as User);
+      },
+      update: (id: number, dto: UpdateUserDto) => {
+        return Promise.resolve({
+          id,
+          email: 'asdf@asdf.com',
+          password: 'asdf',
+          ...dto,
+        } as User);
+      },
     };
 
     fakeAuthService = {
@@ -90,5 +101,46 @@ describe('UsersController', () => {
     expect(user.id).toEqual(1);
 
     expect(session.userId).toEqual(1);
+  });
+
+  it('signOut remove session object', async () => {
+    const session = { userId: 1 };
+
+    await controller.signOut(session);
+
+    expect(session.userId).toBeNull();
+  });
+
+  it('deleteUser returns a delete user', async () => {
+    const user = await controller.deleteUser(1);
+
+    expect(user.id).toEqual(1);
+  });
+
+  it('updateUser returns a user with updated fields', async () => {
+    const email = 'asdf2@gmail.com';
+    const password = 'asdf2';
+
+    const user = await controller.updateUser(1, {
+      email,
+      password,
+    });
+
+    expect(user.id).toEqual(1);
+    expect(user.email).toEqual(email);
+    expect(user.password).toEqual(password);
+  });
+
+  it('updateUser returns a user with no changed fields, if we do not provide this', async () => {
+    const email = 'asdf2@gmail.com';
+
+    const user = await controller.updateUser(1, {
+      email,
+    } as UpdateUserDto);
+
+    expect(user.id).toEqual(1);
+    expect(user.email).toEqual(email);
+
+    expect(user.password).toEqual('asdf');
   });
 });
