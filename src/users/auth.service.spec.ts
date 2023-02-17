@@ -60,8 +60,7 @@ describe('AuthService', () => {
   });
 
   it('throw an error if user signs up with email that is in use', async () => {
-    fakeUsersService.find = () =>
-      Promise.resolve([{ id: 1, email: 'a', password: '1' } as User]);
+    await service.signup({ email: 'asdf@asdf.com', password: 'asdf' });
 
     await expect(
       service.signup({ email: 'asdf@asdf.com', password: 'asdf' }),
@@ -75,13 +74,10 @@ describe('AuthService', () => {
   });
 
   it('throw an error if invalid password provided', async () => {
-    fakeUsersService.find = () =>
-      Promise.resolve([
-        { id: 1, email: 'asdf@asdf.com', password: 'asdf' } as User,
-      ]);
+    await service.signup({ email: 'asdfasdf@asdf.com', password: 'password' });
 
     await expect(
-      service.signin({ email: 'asdfasdf@asdf.com', password: 'password' }),
+      service.signin({ email: 'asdfasdf@asdf.com', password: 'password1' }),
     ).rejects.toThrow(BadRequestException);
   });
 
