@@ -4,6 +4,7 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { AuthService } from './auth.service';
 import { User } from './user.entity';
+import e from 'express';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -30,7 +31,9 @@ describe('UsersController', () => {
 
     fakeAuthService = {
       // signup: () => {},
-      // signin: () => {},
+      signin: ({ email, password }) => {
+        return Promise.resolve({ id: 1, email, password } as User);
+      },
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -71,5 +74,21 @@ describe('UsersController', () => {
     fakeUsersService.findOne = () => null;
 
     await expect(controller.findUser(1)).rejects.toThrow(NotFoundException);
+  });
+
+  it('signIn updates session object and returns user', async () => {
+    const session = { userId: null };
+
+    const user = await controller.signing(
+      {
+        email: 'asdf@asdf.com',
+        password: 'asdf',
+      },
+      session,
+    );
+
+    expect(user.id).toEqual(1);
+
+    expect(session.userId).toEqual(1);
   });
 });
