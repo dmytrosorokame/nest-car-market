@@ -24,6 +24,7 @@ describe('Authentication system', () => {
       .expect(201)
       .then((res) => {
         const { id, email } = res.body;
+
         expect(id).toBeDefined();
         expect(email).toEqual(testEmail);
       });
