@@ -16,10 +16,10 @@ describe('Authentication system', () => {
   });
 
   it('handles a signup request', () => {
-    const testEmail = 'asdf@asdf.com';
+    const testEmail = 'asd123@asdf.com';
 
     return request(app.getHttpServer())
-      .post('auth/signup')
+      .post('/auth/signup')
       .send({ email: testEmail, password: 'password' })
       .expect(201)
       .then((res) => {
