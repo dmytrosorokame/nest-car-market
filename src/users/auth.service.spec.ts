@@ -1,6 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AuthService } from './auth.service';
+import { CreateUserDto } from './dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 
@@ -9,10 +10,25 @@ describe('AuthService', () => {
   let fakeUsersService: Partial<UsersService>;
 
   beforeEach(async () => {
+    const users = [];
+
     fakeUsersService = {
-      find: () => Promise.resolve([]),
-      create: ({ email, password }: { email: string; password: string }) =>
-        Promise.resolve({ id: 1, email, password } as User),
+      find: (email: string) => {
+        const filteredUsers = users.filter((user) => user.email === email);
+
+        return Promise.resolve(filteredUsers);
+      },
+      create: ({ email, password }: CreateUserDto) => {
+        const user = {
+          id: Math.floor(Math.random() * 99999),
+          email,
+          password,
+        } as User;
+
+        users.push(user);
+
+        return Promise.resolve(user);
+      },
     };
 
     const module = await Test.createTestingModule({
@@ -70,15 +86,7 @@ describe('AuthService', () => {
   });
 
   it('return a user if correct password is provided', async () => {
-    fakeUsersService.find = () =>
-      Promise.resolve([
-        {
-          id: 1,
-          email: 'asdf@asdf.com',
-          password:
-            '493c19f872006614.e30c443c5e5735d5ed66b5f1d6d2ef5ae5fa2db56f9f9d9af4b9a1fc546ba72f',
-        } as User,
-      ]);
+    await service.signup({ email: 'asdf@asdf.com', password: 'mypassword' });
 
     const user = await service.signin({
       email: 'asdf@asdf.com',
