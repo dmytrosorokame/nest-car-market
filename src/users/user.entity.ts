@@ -21,6 +21,9 @@ export class User {
   // @Exclude() we can use this, but maybe we want to exclude only in some scenario.
   password: string;
 
+  @Column({ default: true })
+  isAdmin: boolean;
+
   @OneToMany(() => Report, (report) => report.user)
   reports: Report[];
 

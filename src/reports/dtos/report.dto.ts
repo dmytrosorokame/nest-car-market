@@ -15,6 +15,8 @@ export class ReportDto {
   make: string;
   @Expose()
   model: string;
+  @Expose()
+  approved: boolean;
 
   @Transform(({ obj }) => obj.user.id)
   @Expose()
