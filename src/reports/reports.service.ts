@@ -4,6 +4,7 @@ import { Report } from './report.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { GetEstimateDto } from './dtos';
 
 @Injectable()
 export class ReportsService {
@@ -27,5 +28,13 @@ export class ReportsService {
     report.approved = approved;
 
     return this.repo.save(report);
+  }
+
+  createEstimate(dto: GetEstimateDto) {
+    return this.repo
+      .createQueryBuilder()
+      .select('*')
+      .where('make = :make', { make: dto.make })
+      .getRawMany();
   }
 }
