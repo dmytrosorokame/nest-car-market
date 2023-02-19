@@ -1,3 +1,4 @@
+import { AdminGuard } from './../guards/admin.guard';
 import { User } from './../users/user.entity';
 import { AuthGuard } from './../guards/auth.guard';
 import {
@@ -26,7 +27,7 @@ export class ReportsController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard)
+  @UseGuards(AdminGuard)
   approveReport(
     @Param('id', ParseIntPipe) reportId: number,
     @Body() dto: ApproveReportDto,
