@@ -30,5 +30,7 @@ export class ReportsController {
   approveReport(
     @Param('id', ParseIntPipe) reportId: number,
     @Body() dto: ApproveReportDto,
-  ) {}
+  ) {
+    return this.reportsService.changeApproval(reportId, dto.approve);
+  }
 }
